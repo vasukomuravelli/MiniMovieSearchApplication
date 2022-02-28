@@ -1,4 +1,4 @@
-# MiniMovieSearchApplication
+# Mini Movie Search Application
 
 Created a mini movie search application. Here users able to find information about his or her favourite movies. All need to do is search for the movie using the search bar. on clicking any of the results shown
 we will be showing the few critical information like Cast of movie, Box office collection, Release date of the movie, Language of the movie, IMDB rating, Director, Production House, Genre of the movie.
