@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Movie application</title>
+</head>
+<style>
+    body {
+        background-color: #121926;
+    }
+
+    #name {
+        display: inline-block;
+    }
+
+    #output {
+        background-color: #121926;
+        margin-top: 2px;
+        padding-top: 1px;
+        border-radius: 2%;
+        z-index: 1;
+        position: absolute;
+        overflow-y: scroll;
+        max-height: 200px;
+        width: inherit;
+    }
+
+    #output::-webkit-scrollbar {
+        display: none;
+    }
+
+    #output>div {
+        cursor: pointer;
+        background-color: #334366;
+        color: whitesmoke;
+        margin: 1px;
+        border-radius: 2px;
+        display: flex;
+    }
+
+    .Navbar>div input {
+        height: 30px;
+        padding-left: 25px;
+        width: 100%;
+    }
+
+    .Navbar>div input:focus {
+        outline-width: 0;
+    }
+
+    .Navbar>div {
+        width: 25%;
+    }
+
+    .Navbar {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 5% auto 2%;
+    }
+
+    .Navbar>a p {
+        font-size: xx-large;
+        color: #fff;
+        width: max-content;
+        margin: 0 auto
+    }
+
+    a {
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    #output img {
+        width: 40px;
+        height: 50px;
+        display: inline-block;
+        border-radius: 2px;
+        margin-right: 15px;
+    }
+
+    #library {
+        margin: 50px;
+        min-width: 400px;
+        display: flex;
+        /* border: 1px solid firebrick; */
+        background-color: rgb(53, 40, 60);
+        box-shadow: 0px 7px 17px 0px rgb(210, 155, 205);
+        color: rgb(219, 167, 204);
+        border-radius: 40px;
+    }
+
+    #library img {
+        margin: 30px;
+        border-radius: 20px;
+    }
+
+    #library>div {
+        margin: 30px;
+    }
+
+    .heading {
+        color: #fff;
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -75%);
+    }
+</style>
+
+<body>
+    <h1 class="heading">Movie Application</h1>
+    <div class="Navbar">
+        <a href="./popularMovies.html">
+            <p>Popular Movies</p>
+        </a>
+        <div>
+            <input oninput="debounce(Search,1000)" type="text" id="name" placeholder="Enter your movie search" />
+            <div id="output"></div>
+        </div>
+    </div>
+    <div id="library"></div>
+</body>
+
+</html>
+<script>
+
+    let outputDiv = document.getElementById("output");
+
+    let library = document.getElementById("library");
+
+    var delay;
+
+    // console.log(movie_name)
+
+    function Search() {
+        var movie_name = document.getElementById("name").value;
+        try {
+            fetch(`http://www.omdbapi.com/?s=${movie_name}&apikey=885431b`).then(function (res) {
+                return res.json()
+            })
+                .then(function (res) {
+
+                    show(res.Search);
+                    console.log(res.Search);
+                })
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+    function show(movies) {
+        outputDiv.innerHTML = null;
+        output.style.display = "block";
+        if (!movies) {
+            let div = document.createElement('div');
+            let name = document.createElement('p');
+            name.textContent = "No results found";
+            name.style.paddingLeft = "10px";
+            div.append(name);
+            outputDiv.append(div);
+        }
+        else {
+
+            movies.forEach(element => {
+
+                let div = document.createElement('div');
+
+                let name = document.createElement('p');
+
+                let image = document.createElement('img');
+
+                image.src = element.Poster;
+
+                image.alt = "img";
+
+                name.innerText = element.Title;
+
+                var x = "";
+
+                if (name.innerText.length > 30) {
+                    for (let i = 0; i < 30; i++) {
+                        x += name.innerText[i];
+                    }
+                    name.innerText = x + "...";
+                }
+                div.addEventListener("mouseover", function (event) {
+                    event.Title = element.Title;
+                });
+
+                div.onclick = function () {
+
+                    showdetails(element);
+
+                };
+
+                div.append(image, name);
+
+                outputDiv.append(div);
+
+            });
+        }
+    }
+
+    function debounce(func, time) {
+        if (delay) {
+            clearTimeout(delay);
+        }
+        delay = setTimeout(function () {
+            func();
+        }, time);
+    }
+
+    function showdetails(movie) {
+
+        fetch(`http://www.omdbapi.com/?t=${movie.Title}&apikey=885431b`).then(function (res) {
+            return res.json();
+        })
+            .then(function (res) {
+
+
+                library.innerHTML = null;
+
+                let div = document.createElement('div');
+
+                let image = document.createElement('img');
+
+                image.src = res.Poster;
+
+                image.alt = res.Title;
+
+                let Name = document.createElement('h1');
+
+                let des = document.createElement('h4');
+
+                let Language = document.createElement('h4');
+
+                let genre = document.createElement('h4');
+
+                genre.textContent = "Genre : " + res.Genre
+
+                Language.innerText = "Language : " + res.Language
+
+                Name.innerText = res.Title;
+
+                des.innerText = "Plot : " + res.Plot;
+
+                let release = document.createElement('h4');
+
+                release.innerText = "Released : " + res.Released;
+
+                let rating = document.createElement('h3');
+
+                let collection = document.createElement('h4');
+
+                collection.innerText = "BoxOffice : " + res.BoxOffice;
+
+                rating.innerText = "IMDB Rating : " + res.imdbRating;
+
+                if (movie.imdbRating != "N/A") {
+                    // console.log(Number(rating.innerText.split(':')[1].split('/')[0]) > 8.5);
+
+                    if (Number(rating.innerText.split(':')[1]) > 8.5) {
+                        rating.innerText = rating.innerText + " (Recommended)";
+                    }
+
+                }
+
+                let produce = document.createElement('h4');
+
+                let director = document.createElement('h4');
+
+                director.innerText = "Director : " + res.Director
+
+                produce.textContent = "Production House : " + res.Production;
+
+                div.append(Name, Language, rating, collection, director, produce, genre, release, des);
+
+                library.append(image, div);
+
+            });
+        window.addEventListener('click', () => {
+            output.style.display = "none";
+        })
+    }
+</script>
