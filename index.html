@@ -215,7 +215,7 @@
 
     function showdetails(movie) {
 
-        fetch(`http://www.omdbapi.com/?t=${movie.Title}&apikey=885431b`).then(function (res) {
+        fetch(`https://www.omdbapi.com/?t=${movie.Title}&apikey=885431b`).then(function (res) {
             return res.json();
         })
             .then(function (res) {
