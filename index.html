@@ -137,7 +137,7 @@
     function Search() {
         var movie_name = document.getElementById("name").value;
         try {
-            fetch(`http://www.omdbapi.com/?s=${movie_name}&apikey=885431b`).then(function (res) {
+            fetch(`https://www.omdbapi.com/?s=${movie_name}&apikey=885431b`).then(function (res) {
                 return res.json()
             })
                 .then(function (res) {
